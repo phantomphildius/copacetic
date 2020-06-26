@@ -1,0 +1,5 @@
+<h2>{{ this.currentQuestion }}</h2>
+
+<DailyRating::Selector @ratingSetter={{this.setQuestionValue}} />
+
+<DailyRating::Submitter @isFinal={{this.isFinalQuestion}} @ratingSaver={{this.saveQuestionValue}} />
