@@ -1,4 +1,5 @@
 import { action } from '@ember/object';
+import { equal } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
@@ -19,8 +20,9 @@ export default class Creator extends Component<
   // make this be an array of questionKeys type
   private questionsOrder: string[] = _shuffle(keys(dailyRatingQuestionsMap));
   @tracked private questionIndex = 0;
+  @equal('questionIndex', 4) private isFinalQuestion: boolean;
 
-  public get currentQuestionKey(): string {
+  private get currentQuestionKey(): string {
     const { questionIndex, questionsOrder } = this;
     return questionsOrder[questionIndex];
   }
@@ -29,14 +31,10 @@ export default class Creator extends Component<
     return dailyRatingQuestionsMap[this.currentQuestionKey];
   }
 
-  public get isFinalQuestion(): boolean {
-    return this.questionIndex === 4;
-  }
-
   @action
-  public setQuestionValue(questionRating: number): void {
+  public setQuestionValue(answer: string): void {
     const { currentQuestionKey } = this;
-    this.args.dailyRating[currentQuestionKey] = questionRating;
+    this.args.dailyRating[currentQuestionKey] = this.deriveRatingValueFromAnswer(answer);
   }
 
   @action
@@ -47,5 +45,9 @@ export default class Creator extends Component<
     } else {
       this.questionIndex += 1;
     }
+  }
+
+  private deriveRatingValueFromAnswer(questionAnswer: string): number {
+    return questionAnswer === 'no' ? 0 : 1;
   }
 }

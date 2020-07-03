@@ -1,1 +1,8 @@
 <LinkTo @route="daily-ratings.new">New</LinkTo>
+
+<ul>
+  {{#each model as |dailyRating|}}
+    <li>{{dailyRating.totalScore}}</li>
+    <li>{{dailyRating.day}}</li>
+  {{/each}}
+</ul>
