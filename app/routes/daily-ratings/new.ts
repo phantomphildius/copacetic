@@ -9,6 +9,6 @@ export default class DailyRatingsNew extends Route.extend({
   @service public store: Store;
 
   public async model() {
-    return this.store.createRecord('daily-rating', { day: moment().format('l')});
+    return this.store.createRecord('daily-rating', { day: moment().format()});
   }
 }

@@ -1,5 +1,9 @@
 <h2>{{ this.currentQuestion }}</h2>
 
-<DailyRating::Selector @ratingSetter={{this.setQuestionValue}} />
+<DailyRating::Selector @ratingSetter={{this.answerQuestion}} />
 
-<DailyRating::Submitter @isFinal={{this.isFinalQuestion}} @ratingSaver={{this.saveQuestionValue}} />
+{{#if this.isFinalQuestion}}
+  <PaperButton @raised=true @primary=true {{on 'click' this.saveQuestionValue}}>
+    Save Rating
+  </PaperButton>
+{{/if}}

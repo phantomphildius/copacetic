@@ -1,11 +1,14 @@
-import { action } from '@ember/object';
-import { equal } from '@ember/object/computed';
-import { inject as service } from '@ember/service';
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import DailyRating, { dailyRatingQuestionsMap } from 'copacetic/models/daily-rating';
-import Router from 'copacetic/router';
-import _shuffle from 'lodash/shuffle';
+import { action } from "@ember/object";
+import { equal } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import DailyRating, {
+  dailyRatingQuestionsMap,
+} from "copacetic/models/daily-rating";
+import Router from "copacetic/router";
+import _shuffle from "lodash/shuffle";
+import { ratingQuestionOption } from "./selector";
 
 interface CreatorArgs {
   dailyRating: DailyRating;
@@ -13,14 +16,12 @@ interface CreatorArgs {
 
 const { keys } = Object;
 
-export default class Creator extends Component<
-  CreatorArgs
-> {
+export default class Creator extends Component<CreatorArgs> {
+  @equal("questionIndex", 4) public isFinalQuestion: boolean;
   @service private router: Router;
+  @tracked private questionIndex = 0;
   // make this be an array of questionKeys type
   private questionsOrder: string[] = _shuffle(keys(dailyRatingQuestionsMap));
-  @tracked private questionIndex = 0;
-  @equal('questionIndex', 4) private isFinalQuestion: boolean;
 
   private get currentQuestionKey(): string {
     const { questionIndex, questionsOrder } = this;
@@ -31,23 +32,32 @@ export default class Creator extends Component<
     return dailyRatingQuestionsMap[this.currentQuestionKey];
   }
 
+  // https://www.typescriptlang.org/docs/handbook/enums.html
   @action
-  public setQuestionValue(answer: string): void {
-    const { currentQuestionKey } = this;
-    this.args.dailyRating[currentQuestionKey] = this.deriveRatingValueFromAnswer(answer);
+  public answerQuestion(answer: ratingQuestionOption): void {
+    const { currentQuestionKey, isFinalQuestion } = this;
+    this.args.dailyRating[
+      currentQuestionKey
+    ] = this.deriveRatingValueFromAnswer(answer);
+
+    if (!isFinalQuestion) {
+      this.incrementQuestion();
+    }
   }
 
   @action
   public saveQuestionValue(): void {
-    if (this.isFinalQuestion) {
-      this.args.dailyRating.save();
-      this.router.transitionTo('daily-ratings');
-    } else {
-      this.questionIndex += 1;
-    }
+    this.args.dailyRating.save();
+    this.router.transitionTo("daily-ratings");
   }
 
-  private deriveRatingValueFromAnswer(questionAnswer: string): number {
-    return questionAnswer === 'no' ? 0 : 1;
+  private incrementQuestion(): void {
+    this.questionIndex++;
+  }
+
+  private deriveRatingValueFromAnswer(
+    questionAnswer: ratingQuestionOption
+  ): number {
+    return questionAnswer === "no" ? 0 : 1;
   }
 }

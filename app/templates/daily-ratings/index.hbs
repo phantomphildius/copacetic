@@ -1,5 +1,7 @@
 <LinkTo @route="daily-ratings.new">New</LinkTo>
 
+<DailyRating::TimeSeriesChart @dailyRatings={{model}} />
+
 <ul>
   {{#each model as |dailyRating|}}
     <li>{{dailyRating.totalScore}}</li>

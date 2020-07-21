@@ -2,25 +2,23 @@ import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
+enum ratingQuestionOptions {
+  'yes' = 1,
+  'no' = 0,
+}
+export type ratingQuestionOption = 'yes' | 'no';
 interface SelectorArgs {
-  ratingSetter: (value: number) => void;
+  ratingSetter: (value: string) => void;
 }
 
 export default class Selector extends Component<
   SelectorArgs
 > {
-  public options: number[];
-  @tracked public selectedValue: number;
-
-  constructor(owner: unknown, args: SelectorArgs) {
-    super(owner, args);
-    this.options = [1, 2, 3, 4, 5];
-    this.selectedValue = 0;
-  }
+  public options: ratingQuestionOption[] = ['yes', 'no'];
+  @tracked public selectedValue: ratingQuestionOption;
 
   @action
-  public chooseValue(value: number): void {
-    this.selectedValue = value;
+  public chooseValue(value: ratingQuestionOption): void {
     this.args.ratingSetter(value);
   }
 }

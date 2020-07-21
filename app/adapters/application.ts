@@ -7,7 +7,7 @@ PouchDB.plugin(auth);
 const remote = new PouchDB("http://localhost:5984/copacetic");
 const db = new PouchDB("copacetic");
 
-remote.logIn("admin", "password", function (err, response) {
+remote.logIn("admin", process.env.POUCH_CREDS, function (err, response) {
   if (err) {
     if (err.name === "unauthorized" || err.name === "forbidden") {
       console.log(response);

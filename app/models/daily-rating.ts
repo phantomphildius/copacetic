@@ -31,7 +31,7 @@ export default class DailyRating extends Model {
   @attr("number", { defaultValue: 0 }) public shipping!: number;
   @attr("number", { defaultValue: 0 }) public developing!: number;
 
-  @attr("date") public day!: Date;
+  @attr("string") public day!: string;
 
   @attr("string") public rev: string;
 
